@@ -49,7 +49,7 @@ void setup() {
 void loop() {
   /* ---------- read inputs ---------- */
   bool btn = digitalRead(BTN_PIN);
-  bool lim = digitalRead(LIM_PIN) == LOW;       // LOW when switch is hit
+  bool lim = (digitalRead(LIM_PIN)   == LOW);
 
   /* ---------- debounce / timing ---------- */
   if (btn != lastBtn) {                         // any edge on button
@@ -77,7 +77,7 @@ void loop() {
   if (!lim) limitLatched = false;               // ready for next hit
 
   /* ---------- behaviour while spinning ---------- */
-  if (longPressActive) {
+  if (longPressActive && !lim) {
     motor.step(-10);                             // free-spin
     return;                                     // ignore short-press logic
   }
