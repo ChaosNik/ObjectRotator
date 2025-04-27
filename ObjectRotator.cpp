@@ -22,6 +22,7 @@ const int SPEED_RPM = 10;
 /* ── I/O pins & timing ────────────────────────── */
 const int      BTN_PIN      = 2;                 // momentary push-button
 const int      LIM_PIN      = 3;                 // limit / home switch
+const uint8_t  LED_PIN      = 13;                 // LED
 const uint8_t  DEBOUNCE_MS  = 50;
 const uint16_t LONGPRESS_MS = 3000;
 
@@ -44,6 +45,7 @@ void setup() {
   motor.setSpeed(SPEED_RPM);
   pinMode(BTN_PIN, INPUT_PULLUP);
   pinMode(LIM_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
 }
 
 void loop() {
@@ -73,8 +75,12 @@ void loop() {
   if (lim && !limitLatched) {                   // first contact
     zeroHere();                                 // **instant home**
     limitLatched = true;
+    digitalWrite(LED_PIN, HIGH);  // turn it on
   }
-  if (!lim) limitLatched = false;               // ready for next hit
+  if (!lim) {
+    digitalWrite(LED_PIN, LOW);  // turn it off
+    limitLatched = false;               // ready for next hit
+  }
 
   /* ---------- behaviour while spinning ---------- */
   if (longPressActive && !lim) {
